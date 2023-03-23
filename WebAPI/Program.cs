@@ -1,6 +1,8 @@
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Business.Abstract;
 using Business.Concrete;
+using Business.DependencyResolvers.Autofac;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 
@@ -13,9 +15,12 @@ namespace WebAPI
 
             
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddSwaggerGen();
-            builder.Services.AddSingleton<IProductService, ProductManager>();
-            builder.Services.AddSingleton<IProductDal, EfProductDal>();
+            builder.Host
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureContainer<ContainerBuilder>(builder =>
+                {
+                    builder.RegisterModule(new AutofacBusinessModule());
+                });
 
 
             // Add services to the container.
@@ -32,9 +37,9 @@ namespace WebAPI
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI();                
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
