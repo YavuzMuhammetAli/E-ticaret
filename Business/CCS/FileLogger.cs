@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Business.CCS
 {
-    public interface ILogger
+    public class FileLogger : ILogger
     {
-        void Log();
+        public void Log()
+        {
+            Console.WriteLine("dosyaya loglandı");
+        }
     }
 }
